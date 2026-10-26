@@ -13,5 +13,9 @@
     "demo": "node scripts/demo.mjs"
   },
   "license": "MIT",
-  "author": "Hamed Minaei"
+  "author": {
+    "name": "Hamed Minaei",
+    "url": "https://github.com/hamed665"
+  },
+  "homepage": "https://hamed665.github.io/streaming-anomaly-workbench/"
 }
