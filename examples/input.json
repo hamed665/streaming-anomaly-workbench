@@ -1,0 +1,69 @@
+{
+  "settings": {
+    "lateness": 2,
+    "warmup": 4,
+    "threshold": 3
+  },
+  "events": [
+    {
+      "id": "e1",
+      "key": "checkout-latency",
+      "time": 0,
+      "value": 100
+    },
+    {
+      "id": "e2",
+      "key": "checkout-latency",
+      "time": 1,
+      "value": 102
+    },
+    {
+      "id": "e3",
+      "key": "checkout-latency",
+      "time": 2,
+      "value": 99
+    },
+    {
+      "id": "e4",
+      "key": "checkout-latency",
+      "time": 3,
+      "value": 101
+    },
+    {
+      "id": "e5",
+      "key": "checkout-latency",
+      "time": 4,
+      "value": 100
+    },
+    {
+      "id": "e6",
+      "key": "checkout-latency",
+      "time": 7,
+      "value": 280
+    },
+    {
+      "id": "e7",
+      "key": "checkout-latency",
+      "time": 6,
+      "value": 103
+    },
+    {
+      "id": "e8",
+      "key": "checkout-latency",
+      "time": 2,
+      "value": 98
+    },
+    {
+      "id": "e9",
+      "key": "checkout-latency",
+      "time": 8,
+      "value": 101
+    },
+    {
+      "id": "e10",
+      "key": "checkout-latency",
+      "time": 9,
+      "value": 100
+    }
+  ]
+}

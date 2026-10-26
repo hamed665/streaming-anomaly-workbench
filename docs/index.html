@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Replay event-time streams with lateness handling and online baselines."><title>SignalWatch — Engineering Workbench</title><style>:root{--ink:#16221d;--muted:#52645a;--paper:#f4f5ef;--surface:#fff;--line:#d7ded5;--accent:#633f85;--tint:#edf1e8;--danger:#9d2424;font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:var(--ink);background:var(--paper);font-synthesis:none}
+*{box-sizing:border-box}body{margin:0}button,textarea{font:inherit}button,a{touch-action:manipulation}button:focus-visible,a:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:4px}button{cursor:pointer}button:disabled{cursor:wait;opacity:.6}a{color:var(--accent)}.skip{position:absolute;left:1rem;top:-5rem;background:white;padding:1rem;z-index:10}.skip:focus{top:1rem}
+header{border-bottom:1px solid var(--line);padding:1.25rem 3rem;display:flex;justify-content:space-between;gap:1rem;align-items:center;background:var(--surface)}.brand{font-size:1.125rem;font-weight:750;letter-spacing:-.04em}.mark{display:inline-block;margin-right:.75rem;color:var(--accent);font-family:ui-monospace,monospace}.topnote{font: .75rem ui-monospace,monospace;color:var(--muted)}main{max-width:1440px;margin:auto;padding:3rem}.intro{display:grid;grid-template-columns:1fr 20rem;gap:2rem;align-items:end;margin-bottom:2rem}.eyebrow{font:.75rem ui-monospace,monospace;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin:0 0 1rem}h1{font-size:clamp(2rem,3.7vw,3.5rem);line-height:1.04;letter-spacing:-.05em;max-width:48rem;margin:0 0 1rem}h2{font-size:1rem;margin:0}p{line-height:1.6}.sub{color:var(--muted);max-width:46rem;margin:0}.boundary{border-left:3px solid var(--accent);padding-left:1rem;font-size:.875rem;color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);background:var(--surface);margin-bottom:2rem}.metric{padding:1.5rem 2rem}.metric+.metric{border-left:1px solid var(--line)}.metric span{display:block;font-size:.75rem;color:var(--muted);margin-bottom:.75rem}.metric strong{font-size:2.5rem;font-weight:600;letter-spacing:-.05em}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 23rem;gap:1.5rem;align-items:start}.panel{border:1px solid var(--line);background:var(--surface);min-width:0}.panelhead{padding:1.25rem 1.5rem;display:flex;gap:1rem;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}.label{font:.6875rem ui-monospace,monospace;color:var(--muted);letter-spacing:.05em}.tablewrap{overflow:auto;max-height:32rem}table{border-collapse:collapse;width:100%;text-align:left;font-size:.8125rem}th{background:var(--tint);font-weight:600;position:sticky;top:0;white-space:nowrap}td,th{padding:1rem 1.25rem;border-bottom:1px solid var(--line)}td{max-width:20rem;overflow-wrap:anywhere}tr:last-child td{border-bottom:0}.status{display:inline-block;font:.6875rem ui-monospace,monospace;padding:.25rem .5rem;background:var(--tint);color:var(--accent);border:1px solid var(--line)}.panelnote{padding:1rem 1.5rem;margin:0;border-top:1px solid var(--line);color:var(--muted);font-size:.8125rem}.controls{padding:1.25rem}.controls p{font-size:.8125rem;color:var(--muted);margin-top:0}.primary{background:var(--accent);color:white;border:1px solid var(--accent);padding:.875rem 1.25rem;font-weight:600;width:100%}.secondary{background:white;color:var(--ink);border:1px solid var(--line);padding:.75rem 1rem}.toolbar{display:flex;gap:.5rem;margin-top:.75rem}.toolbar button{flex:1;font-size:.75rem}label{display:block;font-size:.8125rem;font-weight:600;margin:1.25rem 0 .75rem}textarea{width:100%;min-height:24rem;resize:vertical;border:1px solid var(--line);background:#f9faf6;padding:1rem;font:.6875rem/1.65 ui-monospace,monospace;color:var(--ink);tab-size:2}#feedback{min-height:1.5rem;margin:.75rem 0 0;font-size:.8125rem;color:var(--muted)}#feedback.error{color:var(--danger)}details{border-top:1px solid var(--line);margin-top:1.5rem;padding-top:1.25rem}summary{cursor:pointer;font-size:.8125rem;font-weight:600}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:.75rem/1.7 ui-monospace,monospace;max-height:26rem;overflow:auto;background:var(--tint);padding:1rem}footer{max-width:1440px;margin:2rem auto 0;padding:1.5rem 3rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:1rem;color:var(--muted);font-size:.75rem}.empty{padding:3rem 1.5rem;color:var(--muted)}
+@media(max-width:1050px){main{padding:2rem}.intro{grid-template-columns:1fr}.boundary{max-width:40rem}.workspace{grid-template-columns:minmax(0,1fr) 20rem}.metric{padding:1.25rem}}
+@media(max-width:760px){header{padding:1rem}.topnote{max-width:9rem;text-align:right}main{padding:1.5rem 1rem}.workspace{grid-template-columns:1fr}.metric{padding:1rem .75rem}.metric strong{font-size:1.75rem}.metric span{min-height:2rem;line-height:1.5}.intro{gap:1rem}.stats{margin-bottom:1rem}.panelhead{padding:1rem}footer{padding:1.25rem 1rem;flex-direction:column}.workspace aside{order:-1}textarea{min-height:12rem}.tablewrap{max-height:28rem}}
+@media(prefers-reduced-motion:no-preference){button{transition:opacity .15s}button:hover{opacity:.85}}
+</style></head>
+<body><a class="skip" href="#main">Skip to workbench</a>
+<header><div class="brand"><span class="mark">[04]</span>SignalWatch</div><span class="topnote">LOCAL WORKBENCH / v0.1.0</span></header>
+<main id="main"><section class="intro"><div><p class="eyebrow">Smart Visions / Engineering experiments</p><h1>Understand the unusual</h1><p class="sub">Replay event-time streams with lateness handling and online baselines.</p></div><p class="boundary">Synthetic sample data. Edit the input, inspect the outcome, export the evidence. No uploads or API keys.</p></section>
+<section id="stats" class="stats" aria-label="Analysis summary"></section>
+<div class="workspace"><section class="panel" aria-labelledby="results-title"><div class="panelhead"><h2 id="results-title">Analysis results</h2><span class="label" id="rowcount">PREPARING</span></div><div class="tablewrap" id="results"></div><p class="panelnote" id="note"></p></section>
+<aside class="panel"><div class="panelhead"><h2>Run an experiment</h2><span class="label">JSON INPUT</span></div><div class="controls"><p>Adjust the synthetic dataset or configuration. All calculations run locally in your browser.</p><form id="form"><button class="primary" type="submit" id="run">Run analysis →</button><div class="toolbar"><button class="secondary" type="button" id="reset">Reset sample</button><button class="secondary" type="button" id="export" disabled>Export report</button></div><p id="feedback" role="status" aria-live="polite"></p><label for="input">Dataset and configuration</label><textarea id="input" spellcheck="false" aria-describedby="input-help"></textarea><p id="input-help">Valid JSON, up to 2 MB. Use synthetic or non-sensitive data.</p></form><details><summary>Complete report</summary><pre id="raw"></pre></details></div></aside></div>
+</main><footer><span>Built by Hamed Minaei · Reference implementation</span><a href="https://github.com/hamed665/streaming-anomaly-workbench">Source, tests & design notes ↗</a></footer><script type="module">function requireValue(condition, message) {
+  if (!condition) throw new Error(message);
+}
+function record(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+function identifier(value) {
+  return typeof value === 'string' && /^[a-zA-Z0-9_.:-]{1,120}$/.test(value);
+}
+function boundedArray(value, name, limit=10000) {
+  requireValue(Array.isArray(value) && value.length<=limit, `${name} must be an array of at most ${limit} entries`);
+}
+function finite(value) { return typeof value==='number' && Number.isFinite(value); }
+function canonical(value) {
+  if (Array.isArray(value)) return '['+value.map(canonical).join(',')+']';
+  if (record(value)) return '{'+Object.keys(value).sort().map(k=>JSON.stringify(k)+':'+canonical(value[k])).join(',')+'}';
+  requireValue(value!==undefined && (typeof value!=='number' || Number.isFinite(value)), 'JSON value required');
+  return JSON.stringify(value);
+}
+function timestamp(value) {
+  requireValue(typeof value==='string', 'ISO timestamp required');
+  const m=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d{1,3})?(Z|[+-]\d{2}:\d{2})$/.exec(value);
+  requireValue(m, 'timestamp must include seconds and an explicit UTC offset');
+  const [,ys,ms,ds,hs,mins,ss,offset]=m;
+  const [y,month,day,h,min,s]=[ys,ms,ds,hs,mins,ss].map(Number);
+  const leap=y%4===0 && (y%100!==0 || y%400===0);
+  const days=[31,leap?29:28,31,30,31,30,31,31,30,31,30,31];
+  requireValue(month>=1 && month<=12 && day>=1 && day<=days[month-1] && h<24 && min<60 && s<60,'invalid calendar timestamp');
+  if (offset!=='Z') requireValue(Number(offset.slice(1,3))<=23 && Number(offset.slice(4))<=59,'invalid UTC offset');
+  const result=Date.parse(value);
+  requireValue(Number.isFinite(result), 'invalid timestamp');
+  return result;
+}
+
+
+class OnlineBaseline {
+  constructor() {this.n=0;this.mean=0;this.m2=0;}
+  update(value) {
+    requireValue(finite(value),'finite observation required');
+    const n=this.n+1,delta=value-this.mean,mean=this.mean+delta/n,m2=this.m2+delta*(value-mean);
+    requireValue(finite(mean)&&finite(m2),'numeric range exceeded');
+    this.n=n;this.mean=mean;this.m2=Math.max(0,m2);
+  }
+  get stddev() {return this.n>1?Math.sqrt(this.m2/(this.n-1)):0;}
+}
+function replay(events,{lateness=2,warmup=4,threshold=3}={}) {
+  boundedArray(events,'events');
+  requireValue(finite(lateness)&&lateness>=0 && Number.isInteger(warmup)&&warmup>=2 && finite(threshold)&&threshold>0,'invalid detector settings');
+  const baselines=new Map(),seen=new Map(),pending=[],rows=[];
+  let maximum=-Infinity,watermark=-Infinity;
+  function process(event) {
+    const baseline=baselines.get(event.key)||new OnlineBaseline();baselines.set(event.key,baseline);
+    const before=baseline.n;
+    let score=null,status='learning';
+    if(before>=warmup) {
+      const distance=Math.abs(event.value-baseline.mean),sd=baseline.stddev;
+      score=sd===0?(distance===0?0:Infinity):distance/sd;
+      status=score>threshold?'anomaly':'normal';
+    }
+    rows.push({...event,status,baseline_count:before,baseline_mean:before?baseline.mean:null,z_score:score===Infinity?'unbounded':score});
+    if(status!=='anomaly') baseline.update(event.value);
+  }
+  function drain(until) {
+    pending.sort((a,b)=>a.time-b.time||a.id.localeCompare(b.id,'en'));
+    while(pending.length&&pending[0].time<=until) process(pending.shift());
+  }
+  for(const event of events) {
+    requireValue(record(event)&&identifier(event.id)&&identifier(event.key)&&finite(event.time)&&finite(event.value)&&Math.abs(event.value)<=1e100,'invalid stream event');
+    const signature=canonical(event);
+    if(seen.has(event.id)) {requireValue(seen.get(event.id)===signature,'event id reused with different payload');continue;}
+    seen.set(event.id,signature);
+    if(event.time<watermark) {rows.push({...event,status:'late',baseline_count:null,baseline_mean:null,z_score:null});continue;}
+    maximum=Math.max(maximum,event.time);watermark=maximum-lateness;
+    pending.push({...event});drain(watermark);
+  }
+  drain(Infinity);
+  return {rows,watermark:finite(watermark)?watermark:null,baselines:Object.fromEntries([...baselines].map(([key,b])=>[key,{count:b.n,mean:b.mean,stddev:b.stddev}]))};
+}
+function analyze(input) {
+  requireValue(record(input),'object input required');
+  const report=replay(input.events,input.settings);
+  return {summary:[{label:'Unique events',value:report.rows.length},{label:'Anomalies',value:report.rows.filter(r=>r.status==='anomaly').length},{label:'Late arrivals',value:report.rows.filter(r=>r.status==='late').length}],
+    note:'Event-time order uses a watermark. Anomalies and late arrivals do not update the cumulative baseline. End-of-input flushes buffered events.',
+    columns:['id','key','time','value','status','baseline_count','baseline_mean','z_score'],...report};
+}
+
+const sample={"settings":{"lateness":2,"warmup":4,"threshold":3},"events":[{"id":"e1","key":"checkout-latency","time":0,"value":100},{"id":"e2","key":"checkout-latency","time":1,"value":102},{"id":"e3","key":"checkout-latency","time":2,"value":99},{"id":"e4","key":"checkout-latency","time":3,"value":101},{"id":"e5","key":"checkout-latency","time":4,"value":100},{"id":"e6","key":"checkout-latency","time":7,"value":280},{"id":"e7","key":"checkout-latency","time":6,"value":103},{"id":"e8","key":"checkout-latency","time":2,"value":98},{"id":"e9","key":"checkout-latency","time":8,"value":101},{"id":"e10","key":"checkout-latency","time":9,"value":100}]};
+const editor=document.getElementById('input');
+const form=document.getElementById('form');
+const feedback=document.getElementById('feedback');
+let currentReport=null;
+function element(tag,text,className) {
+  const node=document.createElement(tag);
+  if(text!==undefined) node.textContent=String(text);
+  if(className) node.className=className;
+  return node;
+}
+function display(value) {
+  if(value===null||value===undefined) return '—';
+  if(typeof value==='number'&&!Number.isInteger(value)) return Number(value.toFixed(4));
+  if(typeof value==='object') return JSON.stringify(value);
+  return value;
+}
+function render(report) {
+  const stats=document.getElementById('stats');stats.replaceChildren();
+  for(const metric of report.summary) {
+    const box=element('div',undefined,'metric');box.append(element('span',metric.label),element('strong',metric.value));stats.append(box);
+  }
+  const table=document.getElementById('results');table.replaceChildren();
+  if(!report.rows.length) table.append(element('p','No matching result rows. Inspect the complete report below.','empty'));
+  else {
+    const grid=element('table');const caption=element('caption','Analysis results');
+    caption.style.position='absolute';caption.style.clipPath='inset(50%)';grid.append(caption);
+    const head=element('thead'),headRow=element('tr');
+    for(const name of report.columns) {const cell=element('th',name.replaceAll('_',' '));cell.scope='col';headRow.append(cell);}
+    head.append(headRow);grid.append(head);const body=element('tbody');
+    for(const row of report.rows.slice(0,500)) {
+      const tr=element('tr');
+      for(const key of report.columns) {
+        const td=element('td');const value=display(row[key]);
+        if(['status','state','code'].includes(key)) td.append(element('span',value,'status'));
+        else td.textContent=String(value);
+        tr.append(td);
+      }
+      body.append(tr);
+    }
+    grid.append(body);table.append(grid);
+  }
+  document.getElementById('note').textContent=report.note+(report.rows.length>500?' Table shows the first 500 rows; export contains all rows.':'');
+  document.getElementById('raw').textContent=JSON.stringify(report,null,2);
+  document.getElementById('rowcount').textContent=report.rows.length+' RESULT ROWS';
+}
+async function run() {
+  const button=document.getElementById('run');button.disabled=true;form.setAttribute('aria-busy','true');
+  feedback.className='';feedback.textContent='Analyzing input…';
+  await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+  try {
+    if(editor.value.length>2000000) throw new Error('Input exceeds the 2 MB demo limit');
+    const report=analyze(JSON.parse(editor.value));currentReport=report;render(report);
+    document.getElementById('export').disabled=false;feedback.textContent='Analysis complete. All processing stayed in this browser.';
+  } catch(error) {
+    currentReport=null;document.getElementById('export').disabled=true;
+    document.getElementById('stats').replaceChildren();
+    document.getElementById('results').replaceChildren(element('p','Input needs attention. Correct the issue and run again.','empty'));
+    document.getElementById('raw').textContent='';document.getElementById('rowcount').textContent='NO CURRENT REPORT';document.getElementById('note').textContent='Previous results cleared because this analysis did not complete.';
+    feedback.className='error';feedback.textContent=error.message;
+  } finally {button.disabled=false;form.setAttribute('aria-busy','false');}
+}
+form.addEventListener('submit',event=>{event.preventDefault();run();});
+document.getElementById('reset').addEventListener('click',()=>{editor.value=JSON.stringify(sample,null,2);run();});
+document.getElementById('export').addEventListener('click',()=>{
+  if(!currentReport) return;
+  const url=URL.createObjectURL(new Blob([JSON.stringify(currentReport,null,2)],{type:'application/json'}));
+  const a=element('a');a.href=url;a.download='analysis-report.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+editor.value=JSON.stringify(sample,null,2);run();
+</script></body></html>

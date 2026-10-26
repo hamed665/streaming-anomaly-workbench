@@ -1,0 +1,11 @@
+import {Script} from 'node:vm';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+const read=p=>readFile(new URL('../'+p,import.meta.url),'utf8');
+const [template,css,validation,core,ui,sample]=await Promise.all(['web/template.html','web/styles.css','src/validation.mjs','src/core.mjs','web/ui.js','examples/input.json'].map(read));
+const strip=source=>source.replace(/^import .* from .*;\s*$/gm,'').replace(/\bexport /g,'');
+const javascript=strip(validation)+'\n'+strip(core)+'\n'+ui.replace('__SAMPLE__',JSON.stringify(JSON.parse(sample)));
+const html=template.replace('__CSS__',()=>css).replace('__JS__',()=>javascript.replace(/<\/script/gi,'<\\/script'));
+new Script(html.split('<script type="module">')[1].split('</script>')[0]);
+await mkdir(new URL('../docs',import.meta.url),{recursive:true});
+await writeFile(new URL('../docs/index.html',import.meta.url),html);
+console.log('Built docs/index.html from the tested engine source.');

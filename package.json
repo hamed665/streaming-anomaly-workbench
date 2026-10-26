@@ -1,0 +1,17 @@
+{
+  "name": "streaming-anomaly-workbench",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Replay event-time streams with lateness handling and online baselines.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test",
+    "build": "node scripts/build.mjs",
+    "demo": "node scripts/demo.mjs"
+  },
+  "license": "MIT",
+  "author": "Hamed Minaei"
+}

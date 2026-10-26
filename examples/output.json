@@ -1,0 +1,137 @@
+{
+  "summary": [
+    {
+      "label": "Unique events",
+      "value": 10
+    },
+    {
+      "label": "Anomalies",
+      "value": 1
+    },
+    {
+      "label": "Late arrivals",
+      "value": 1
+    }
+  ],
+  "note": "Event-time order uses a watermark. Anomalies and late arrivals do not update the cumulative baseline. End-of-input flushes buffered events.",
+  "columns": [
+    "id",
+    "key",
+    "time",
+    "value",
+    "status",
+    "baseline_count",
+    "baseline_mean",
+    "z_score"
+  ],
+  "rows": [
+    {
+      "id": "e1",
+      "key": "checkout-latency",
+      "time": 0,
+      "value": 100,
+      "status": "learning",
+      "baseline_count": 0,
+      "baseline_mean": null,
+      "z_score": null
+    },
+    {
+      "id": "e2",
+      "key": "checkout-latency",
+      "time": 1,
+      "value": 102,
+      "status": "learning",
+      "baseline_count": 1,
+      "baseline_mean": 100,
+      "z_score": null
+    },
+    {
+      "id": "e3",
+      "key": "checkout-latency",
+      "time": 2,
+      "value": 99,
+      "status": "learning",
+      "baseline_count": 2,
+      "baseline_mean": 101,
+      "z_score": null
+    },
+    {
+      "id": "e4",
+      "key": "checkout-latency",
+      "time": 3,
+      "value": 101,
+      "status": "learning",
+      "baseline_count": 3,
+      "baseline_mean": 100.33333333333333,
+      "z_score": null
+    },
+    {
+      "id": "e5",
+      "key": "checkout-latency",
+      "time": 4,
+      "value": 100,
+      "status": "normal",
+      "baseline_count": 4,
+      "baseline_mean": 100.5,
+      "z_score": 0.387298334620742
+    },
+    {
+      "id": "e8",
+      "key": "checkout-latency",
+      "time": 2,
+      "value": 98,
+      "status": "late",
+      "baseline_count": null,
+      "baseline_mean": null,
+      "z_score": null
+    },
+    {
+      "id": "e7",
+      "key": "checkout-latency",
+      "time": 6,
+      "value": 103,
+      "status": "normal",
+      "baseline_count": 5,
+      "baseline_mean": 100.4,
+      "z_score": 2.2803508501982717
+    },
+    {
+      "id": "e6",
+      "key": "checkout-latency",
+      "time": 7,
+      "value": 280,
+      "status": "anomaly",
+      "baseline_count": 6,
+      "baseline_mean": 100.83333333333334,
+      "z_score": 121.71978117054427
+    },
+    {
+      "id": "e9",
+      "key": "checkout-latency",
+      "time": 8,
+      "value": 101,
+      "status": "normal",
+      "baseline_count": 6,
+      "baseline_mean": 100.83333333333334,
+      "z_score": 0.11322770341445335
+    },
+    {
+      "id": "e10",
+      "key": "checkout-latency",
+      "time": 9,
+      "value": 100,
+      "status": "normal",
+      "baseline_count": 7,
+      "baseline_mean": 100.85714285714286,
+      "z_score": 0.6371930928643141
+    }
+  ],
+  "watermark": 7,
+  "baselines": {
+    "checkout-latency": {
+      "count": 8,
+      "mean": 100.75,
+      "stddev": 1.2817398889233094
+    }
+  }
+}
