@@ -6,6 +6,10 @@ A dependency-free JavaScript engineering workbench by Hamed Minaei.
 The browser demo and Node CLI use the **same tested engine source**. No model
 API, account, build service or runtime dependency is required.
 
+**[Open live demo](https://hamed665.github.io/streaming-anomaly-workbench/)**
+
+![SignalWatch workbench preview](docs/preview.jpg)
+
 ## Try the browser demo
 
 Download the repository and open **[docs/index.html](docs/index.html)** in a modern
@@ -14,8 +18,7 @@ browser. It is a self-contained generated file, so it works offline with a
 inspect the result table and export the full report. Invalid input clears stale
 results and disables export until a new analysis succeeds.
 
-To host the demo, serve `docs/` with any static host. No GitHub Pages deployment
-is assumed or required.
+To host the demo, serve `docs/` with any static host. The public demo is also deployed with GitHub Pages.
 
 ## Run locally
 
