@@ -1,5 +1,7 @@
 # SignalWatch
 
+**Created and maintained by [Hamed Minaei](https://github.com/hamed665).**
+
 **Replay event-time streams with lateness handling and online baselines.**
 
 A dependency-free JavaScript engineering workbench by Hamed Minaei.
